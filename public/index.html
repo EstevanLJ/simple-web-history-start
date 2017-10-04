@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Simple WEB History</title>
+    <link rel="stylesheet" href="/css/bulma.min.css">
+</head>
+
+<body style="padding-top: 50px">
+
+    <div id="app" class="container">
+
+
+        <div class="columns">
+            <div class="column">
+
+                <div class="columns">
+                    <div class="column">
+                        <h3 class="title is-3 has-text-centered">Sites cadastrados</h3>
+                    </div>
+                </div>
+
+                <div class="columns" v-if="sites">
+                    <div class="column">
+                        <table class="table is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>URL</th>
+                                    <th>Último estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="site in sites" @click="selecionouSite(site)">
+                                    <td>{{site.id}}</td>
+                                    <td>{{site.nome}}</td>
+                                    <td><a :href="site.url" target="_blank">{{site.url}}</a></td>
+                                    <td :class="[styleLinha(site)]">{{site.status}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <div class="column">
+                        <a class="button is-primary is-outlined is-pulled-right" @click="toogleModal">Adicionar site</a>
+                        <!-- <a class="button is-outlined is-pulled-left" :class="{'is-loading' : desabilitar_atualizar}" :disabled="desabilitar_atualizar" @click="atualizarHistorico">Atualizar</a> -->
+                    </div>
+                </div>
+
+                <div class="columns is-mobile" v-if="exibir_sucesso">
+                    <div class="column is-half is-offset-one-quarter">
+                        <article class="message is-success">
+                            <div class="message-header">
+                                <p>Successo!</p>
+                                <button class="delete" aria-label="delete" @click="exibir_sucesso = false"></button>
+                            </div>
+                            <div class="message-body">
+                                Site cadastrado com sucesso!
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="columns is-mobile" v-if="exibir_erro">
+                    <div class="column is-half is-offset-one-quarter">
+                        <article class="message is-danger">
+                            <div class="message-header">
+                                <p>Erro!</p>
+                                <button class="delete" aria-label="delete" @click="exibir_erro = false"></button>
+                            </div>
+                            <div class="message-body">
+                                Erro ao cadastrar site!
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="column">
+                <div v-if="site_selecionado">
+                    <div class="columns">
+                        <div class="column">
+                            <h3 class="title is-3 has-text-centered">{{site_selecionado.nome}}</h3>
+                        </div>
+                    </div>
+
+                    <div class="columns">
+                        <div class="column">
+                            <table class="table is-fullwidth">
+                                <thead>
+                                    <tr>
+                                        <th width="10%">ID</th>
+                                        <th width="20%">Status</th>
+                                        <th width="20%">Time</th>
+                                        <th width="20%">Error Code</th>
+                                        <th width="30%">Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="historico in historicos">
+                                        <td>{{historico.id}}</td>
+                                        <td>{{historico.status}}</td>
+                                        <td>{{historico.request_time ? historico.request_time + ' ms' : '-'}}</td>
+                                        <td>{{historico.error_code}}</td>
+                                        <td>{{converterData(historico.data)}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="columns">
+                        <div class="column">
+                            <a class="button is-outlined is-pulled-right" :class="{'is-loading' : desabilitar_atualizar}" :disabled="desabilitar_atualizar" @click="atualizarHistorico">Atualizar</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" :class="{'is-active': exibir_modal}">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Adicionar Site</p>
+                    <button class="delete" aria-label="close" @click="toogleModal"></button>
+                </header>
+                <section class="modal-card-body">
+                    <form action="#">
+                        <div class="field">
+                            <label class="label">Nome</label>
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Nome do site" v-model="form.nome">
+                            </div>
+                            <label class="label">URL</label>
+                            <div class="control">
+                                <input class="input" type="text" placeholder="http://..." v-model="form.url">
+                            </div>
+                        </div>
+
+                    </form>
+                </section>
+                <footer class="modal-card-foot">
+                    <button class="button is-success" @click="salvarSite">Salvar</button>
+                    <button class="button" @click="toogleModal">Cancelar</button>
+                </footer>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/moment.min.js"></script>
+    <script src="/js/index.js"></script>
+
+</body>
+
+</html>

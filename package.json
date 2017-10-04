@@ -1,0 +1,17 @@
+{
+  "name": "hello-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodejs ./node_modules/nodemon/bin/nodemon ."
+  },
+  "author": "Estevan",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "moment": "^2.18.1",
+    "node-schedule": "^1.2.4"
+  }
+}
